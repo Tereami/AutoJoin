@@ -39,7 +39,6 @@ namespace AutoJoin
                 "AutoJoin.CommandAutoJoin")
                 ) as PushButton;
             btnJoin.ToolTip = "Соединение всех выбранных элементов. Соединяются только элементы, имеющие пересечения.";
-            btnJoin.LargeImage = new BitmapImage(new Uri(Path.Combine(iconsPath, "AutoJoinSelected.png")));
 
             PushButton btnCut = panel.AddItem(new PushButtonData(
                 "Cut",
@@ -78,8 +77,13 @@ namespace AutoJoin
             btnCutSelected.ToolTip = "Отменить соединение концов выделенных балок";
 
 
+            PushButton btnJoinByOrder = panel.AddItem(new PushButtonData(
+                "JoinByOrder",
+                "Задать приоритет",
+                assemblyPath,
+                "AutoJoin.CommandJoinByOrder")
+                ) as PushButton;
 
-            
 
 
 

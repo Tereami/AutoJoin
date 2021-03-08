@@ -19,6 +19,9 @@ namespace AutoJoin
 
             bool check = false;
 
+            if (gelem1 == null || gelem2 == null)
+                return false;
+
 
             List<Solid> solids1 = GetSolidsOfElement(gelem1);
             List<Solid> solids2 = GetSolidsOfElement(gelem2);
