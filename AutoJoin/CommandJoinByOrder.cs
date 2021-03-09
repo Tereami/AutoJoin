@@ -51,7 +51,7 @@ namespace AutoJoin
             List<MyCategory> uniqCats = elems
                 .Select(i => (BuiltInCategory)i.Category.Id.IntegerValue)
                 .Distinct()
-                .Select(i => new MyCategory(i))
+                .Select(i => new MyCategory(doc, i))
                 .ToList();
 
             FormSetJoinOrder form = new FormSetJoinOrder(uniqCats);
