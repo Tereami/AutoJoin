@@ -1,11 +1,25 @@
-﻿using System;
+﻿#region License
+/*Данный код опубликован под лицензией Creative Commons Attribution-ShareAlike.
+Разрешено использовать, распространять, изменять и брать данный код за основу для производных в коммерческих и
+некоммерческих целях, при условии указания авторства и если производные лицензируются на тех же условиях.
+Код поставляется "как есть". Автор не несет ответственности за возможные последствия использования.
+Зуев Александр, 2021, все права защищены.
+This code is listed under the Creative Commons Attribution-ShareAlike license.
+You may use, redistribute, remix, tweak, and build upon this work non-commercially and commercially,
+as long as you credit the author by linking back and license your new creations under the same terms.
+This code is provided 'as is'. Author disclaims any implied warranty.
+Zuev Aleksandr, 2021, all rigths reserved.*/
+#endregion
+#region usings
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Diagnostics;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+#endregion
 
 namespace AutoJoin
 {
@@ -227,6 +241,9 @@ namespace AutoJoin
         /// </summary>
         public static bool CutElement(Document doc, Element elemForCut, Element elemWithVoid)
         {
+            Debug.WriteLine("Try cut elem " + elemForCut.Id.IntegerValue.ToString()
+                    + " by elem " + elemWithVoid.Id.IntegerValue.ToString());
+
             //Проверяю, можно ли вырезать геометрию из данного элемента
             bool check1 = InstanceVoidCutUtils.CanBeCutWithVoid(elemForCut);
 
@@ -239,16 +256,19 @@ namespace AutoJoin
             //Если одно из условий не выполняется - возвращаю false
             if(!check1 || !check2 || check3)
             {
+                Debug.WriteLine("Unable to cut");
                 return false;
             }
 
             try
             {
                 InstanceVoidCutUtils.AddInstanceVoidCut(doc, elemForCut, elemWithVoid);
+                Debug.WriteLine("Cut success");
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine("Cut exception " + ex.Message);
                 return false;
             }
         }

@@ -1,11 +1,26 @@
-﻿using System;
+﻿#region License
+/*Данный код опубликован под лицензией Creative Commons Attribution-ShareAlike.
+Разрешено использовать, распространять, изменять и брать данный код за основу для производных в коммерческих и
+некоммерческих целях, при условии указания авторства и если производные лицензируются на тех же условиях.
+Код поставляется "как есть". Автор не несет ответственности за возможные последствия использования.
+Зуев Александр, 2021, все права защищены.
+This code is listed under the Creative Commons Attribution-ShareAlike license.
+You may use, redistribute, remix, tweak, and build upon this work non-commercially and commercially,
+as long as you credit the author by linking back and license your new creations under the same terms.
+This code is provided 'as is'. Author disclaims any implied warranty.
+Zuev Aleksandr, 2021, all rigths reserved.*/
+#endregion
+#region usings
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+#endregion
 
 namespace AutoJoin
 {
@@ -15,6 +30,10 @@ namespace AutoJoin
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
+            Debug.Listeners.Clear();
+            Debug.Listeners.Add(new RbsLogger.Logger("AutoCut"));
+            Debug.WriteLine("Start AutoCut");
+
             UIApplication uiApp = commandData.Application;
 
             Document doc = commandData.Application.ActiveUIDocument.Document;
@@ -23,6 +42,7 @@ namespace AutoJoin
             //Выбрать пустотный элемент для вырезания
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             ICollection<ElementId> ids = sel.GetElementIds();
+            Debug.WriteLine("Selected elements: " + ids.Count.ToString());
 
             if (ids.Count == 0)
             {
@@ -39,6 +59,7 @@ namespace AutoJoin
 
             //получаю список элементов, которые пересекает данный элемент
             List<Element> elems = Intersection.GetAllIntersectionElements(doc, voidElem);
+            Debug.WriteLine("Intersection elements: " + elems.Count.ToString());
 
             if (elems == null)
             {
@@ -56,6 +77,7 @@ namespace AutoJoin
                 }
                 t.Commit();
             }
+            Debug.WriteLine("AutoCut complete");
             return Result.Succeeded;
         }
     }
