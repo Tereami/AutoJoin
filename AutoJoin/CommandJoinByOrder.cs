@@ -66,7 +66,7 @@ namespace AutoJoin
             
 
             List<MyCategory> uniqCats = elems
-                .Select(i => (BuiltInCategory)i.Category.Id.IntegerValue)
+                .Select(i => (BuiltInCategory)i.Category.Id.GetElementIdValue())
                 .Distinct()
                 .Select(i => new MyCategory(doc, i))
                 .ToList();
@@ -104,8 +104,8 @@ namespace AutoJoin
                         if (!isElemJoined) continue;
 
                         bool isFirstElemMain = JoinGeometryUtils.IsCuttingElementInJoin(doc, elem1, elem2);
-                        int firstElemPriority = categoriesPriority[(BuiltInCategory)elem1.Category.Id.IntegerValue];
-                        int secondElemPriority = categoriesPriority[(BuiltInCategory)elem2.Category.Id.IntegerValue];
+                        int firstElemPriority = categoriesPriority[(BuiltInCategory)elem1.Category.Id.GetElementIdValue()];
+                        int secondElemPriority = categoriesPriority[(BuiltInCategory)elem2.Category.Id.GetElementIdValue()];
 
                         if(isFirstElemMain && firstElemPriority > secondElemPriority)
                         {

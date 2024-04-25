@@ -68,13 +68,13 @@ namespace AutoJoin
 
                 foreach (Element elem1 in elems)
                 {
-                    Debug.WriteLine("Join elem id " + elem1.Id.IntegerValue.ToString() + " with... ");
+                    Debug.WriteLine("Join elem id " + elem1.Id.GetElementIdValue().ToString() + " with... ");
                     foreach (Element elem2 in elems)
                     {
                         //если этот тот же элемент - пропустить
                         if (elem2.Equals(elem1)) continue;
 
-                        Debug.WriteLine(" id " + elem2.Id.IntegerValue.ToString());
+                        Debug.WriteLine(" id " + elem2.Id.GetElementIdValue().ToString());
                         //если элементы уже ранее соединены - пропустить
                         bool alreadyJoined = JoinGeometryUtils.AreElementsJoined(doc, elem1, elem2);
                         if (alreadyJoined)

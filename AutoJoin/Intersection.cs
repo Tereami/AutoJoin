@@ -241,8 +241,8 @@ namespace AutoJoin
         /// </summary>
         public static bool CutElement(Document doc, Element elemForCut, Element elemWithVoid)
         {
-            Debug.WriteLine("Try cut elem " + elemForCut.Id.IntegerValue.ToString()
-                    + " by elem " + elemWithVoid.Id.IntegerValue.ToString());
+            Debug.WriteLine("Try cut elem " + elemForCut.Id.GetElementIdValue().ToString()
+                    + " by elem " + elemWithVoid.Id.GetElementIdValue().ToString());
 
             //Проверяю, можно ли вырезать геометрию из данного элемента
             bool check1 = InstanceVoidCutUtils.CanBeCutWithVoid(elemForCut);
