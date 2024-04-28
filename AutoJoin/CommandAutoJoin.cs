@@ -33,8 +33,8 @@ namespace AutoJoin
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
-            Debug.Listeners.Clear();
-            Debug.Listeners.Add(new RbsLogger.Logger("AutoJoin"));
+            Trace.Listeners.Clear();
+            Trace.Listeners.Add(new RbsLogger.Logger("AutoJoin"));
             UIApplication uiApp = commandData.Application;
 
             Document doc = commandData.Application.ActiveUIDocument.Document;
@@ -43,7 +43,7 @@ namespace AutoJoin
             //Выбрать элементы для соединения
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             ICollection<ElementId> ids = sel.GetElementIds();
-            Debug.WriteLine("Selected elems: " + ids.Count.ToString());
+            Trace.WriteLine("Selected elems: " + ids.Count.ToString());
 
             if (ids.Count == 0)
             {
@@ -68,18 +68,18 @@ namespace AutoJoin
 
                 foreach (Element elem1 in elems)
                 {
-                    Debug.WriteLine("Join elem id " + elem1.Id.GetElementIdValue().ToString() + " with... ");
+                    Trace.WriteLine("Join elem id " + elem1.Id.GetElementIdValue().ToString() + " with... ");
                     foreach (Element elem2 in elems)
                     {
                         //если этот тот же элемент - пропустить
                         if (elem2.Equals(elem1)) continue;
 
-                        Debug.WriteLine(" id " + elem2.Id.GetElementIdValue().ToString());
+                        Trace.WriteLine(" id " + elem2.Id.GetElementIdValue().ToString());
                         //если элементы уже ранее соединены - пропустить
                         bool alreadyJoined = JoinGeometryUtils.AreElementsJoined(doc, elem1, elem2);
                         if (alreadyJoined)
                         {
-                            Debug.WriteLine("Elements are already joined");
+                            Trace.WriteLine("Elements are already joined");
                             continue;
                         }
 
@@ -87,7 +87,7 @@ namespace AutoJoin
                         bool isIntersects = Intersection.CheckElementsIsIntersect(doc, elem1, elem2);
                         if (!isIntersects)
                         {
-                            Debug.WriteLine("Elements dont have intersection");
+                            Trace.WriteLine("Elements dont have intersection");
                             continue;
                         }
 
@@ -96,11 +96,11 @@ namespace AutoJoin
                         {
                             JoinGeometryUtils.JoinGeometry(doc, elem1, elem2);
                             isExecute = true;
-                            Debug.WriteLine("Joined succesfully!");
+                            Trace.WriteLine("Joined succesfully!");
                         }
                         catch(Exception ex) 
                         {
-                            Debug.WriteLine("Exception: " + ex.Message);
+                            Trace.WriteLine("Exception: " + ex.Message);
                         }
                     }
                 }
@@ -114,7 +114,7 @@ namespace AutoJoin
                 return Result.Cancelled;
             }
 
-            Debug.WriteLine("AutoJoin success");
+            Trace.WriteLine("AutoJoin success");
             return Result.Succeeded;
         }
     }
