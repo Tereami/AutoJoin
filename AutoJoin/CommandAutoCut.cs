@@ -32,7 +32,7 @@ namespace AutoJoin
         {
             Trace.Listeners.Clear();
             Trace.Listeners.Add(new RbsLogger.Logger("AutoCut"));
-            Trace.WriteLine("Start AutoCut");
+            Debug.WriteLine("Start AutoCut");
 
             UIApplication uiApp = commandData.Application;
 
@@ -42,7 +42,7 @@ namespace AutoJoin
             //Выбрать пустотный элемент для вырезания
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             ICollection<ElementId> ids = sel.GetElementIds();
-            Trace.WriteLine("Selected elements: " + ids.Count.ToString());
+            Debug.WriteLine("Selected elements: " + ids.Count.ToString());
 
             if (ids.Count == 0)
             {
@@ -59,7 +59,7 @@ namespace AutoJoin
 
             //получаю список элементов, которые пересекает данный элемент
             List<Element> elems = Intersection.GetAllIntersectionElements(doc, voidElem);
-            Trace.WriteLine("Intersection elements: " + elems.Count.ToString());
+            Debug.WriteLine("Intersection elements: " + elems.Count.ToString());
 
             if (elems == null)
             {
@@ -77,7 +77,7 @@ namespace AutoJoin
                 }
                 t.Commit();
             }
-            Trace.WriteLine("AutoCut complete");
+            Debug.WriteLine("AutoCut complete");
             return Result.Succeeded;
         }
     }

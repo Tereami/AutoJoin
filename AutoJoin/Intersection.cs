@@ -241,7 +241,7 @@ namespace AutoJoin
         /// </summary>
         public static bool CutElement(Document doc, Element elemForCut, Element elemWithVoid)
         {
-            Trace.WriteLine("Try cut elem " + elemForCut.Id.GetElementIdValue().ToString()
+            Debug.WriteLine("Try cut elem " + elemForCut.Id.GetElementIdValue().ToString()
                     + " by elem " + elemWithVoid.Id.GetElementIdValue().ToString());
 
             //Проверяю, можно ли вырезать геометрию из данного элемента
@@ -256,19 +256,19 @@ namespace AutoJoin
             //Если одно из условий не выполняется - возвращаю false
             if(!check1 || !check2 || check3)
             {
-                Trace.WriteLine("Unable to cut");
+                Debug.WriteLine("Unable to cut");
                 return false;
             }
 
             try
             {
                 InstanceVoidCutUtils.AddInstanceVoidCut(doc, elemForCut, elemWithVoid);
-                Trace.WriteLine("Cut success");
+                Debug.WriteLine("Cut success");
                 return true;
             }
             catch(Exception ex)
             {
-                Trace.WriteLine("Cut exception " + ex.Message);
+                Debug.WriteLine("Cut exception " + ex.Message);
                 return false;
             }
         }
