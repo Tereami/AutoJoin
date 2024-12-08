@@ -11,16 +11,12 @@ This code is provided 'as is'. Author disclaims any implied warranty.
 Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.UI.Selection;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 #endregion
 
 namespace AutoJoin
@@ -47,8 +43,20 @@ namespace AutoJoin
 
             if (ids.Count == 0)
             {
-                message = "Выберите элементы для соединения";
+                message = MyStrings.ErrorNoSelectedElements;
                 return Result.Failed;
+            }
+
+            if (ids.Count > 100)
+            {
+                TaskDialog dialog = new TaskDialog(MyStrings.Warning);
+                dialog.MainInstruction = $"{MyStrings.WarningTooManyElements1} ({ids.Count}), {MyStrings.WarningTooManyElements2}?";
+                dialog.CommonButtons = TaskDialogCommonButtons.Ok | TaskDialogCommonButtons.Cancel;
+
+                if (dialog.Show() != TaskDialogResult.Ok)
+                {
+                    return Result.Cancelled;
+                }
             }
 
             List<Element> elems = new List<Element>();
@@ -64,7 +72,7 @@ namespace AutoJoin
             //каждый элемент в списке соединить с каждым элементом из списка
             using (Transaction t = new Transaction(doc))
             {
-                t.Start("Соединение " + elems.Count.ToString() + " элементов");
+                t.Start(MyStrings.TransactionJoin);
 
                 foreach (Element elem1 in elems)
                 {
@@ -98,7 +106,7 @@ namespace AutoJoin
                             isExecute = true;
                             Debug.WriteLine("Joined succesfully!");
                         }
-                        catch(Exception ex) 
+                        catch (Exception ex)
                         {
                             Debug.WriteLine("Exception: " + ex.Message);
                         }
@@ -110,7 +118,7 @@ namespace AutoJoin
 
             if (!isExecute)
             {
-                message = "Элементы не имеют пересечений или уже соединены";
+                message = MyStrings.MessageNoIntersectionNoJoin;
                 return Result.Cancelled;
             }
 

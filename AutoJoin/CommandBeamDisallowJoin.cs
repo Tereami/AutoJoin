@@ -11,15 +11,11 @@ This code is provided 'as is'. Author disclaims any implied warranty.
 Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI.Selection;
+using System.Collections.Generic;
+using System.Linq;
 #endregion
 
 namespace AutoJoin
@@ -35,7 +31,7 @@ namespace AutoJoin
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             if (sel.GetElementIds().Count == 0)
             {
-                TaskDialog.Show("Ошибка", "Выберите балки");
+                TaskDialog.Show(MyStrings.Error, MyStrings.ErrorSelectBeams);
                 return Result.Cancelled;
             }
 
@@ -49,7 +45,7 @@ namespace AutoJoin
 
             using (Transaction t = new Transaction(doc))
             {
-                t.Start("Отмена соединений балок");
+                t.Start(MyStrings.TransactionBeamUnjoin);
                 foreach (FamilyInstance beam in beams)
                 {
                     try
@@ -62,16 +58,14 @@ namespace AutoJoin
                         count++;
                     }
                     catch { errCount++; }
-                } 
+                }
 
                 t.Commit();
             }
 
-            TaskDialog.Show("Отмена соединения", "Обработано балок: " + count + "; ошибок: " + errCount);
+            TaskDialog.Show(MyStrings.TransactionBeamUnjoin, $"{MyStrings.ResultBeams1}: {count}; {MyStrings.ResultBeams2}: {errCount}");
 
-
-
-                return Result.Succeeded;
+            return Result.Succeeded;
         }
     }
 }

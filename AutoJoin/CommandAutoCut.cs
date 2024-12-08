@@ -11,15 +11,12 @@ This code is provided 'as is'. Author disclaims any implied warranty.
 Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 #endregion
 
 namespace AutoJoin
@@ -46,12 +43,12 @@ namespace AutoJoin
 
             if (ids.Count == 0)
             {
-                message = "Выберите элементы для соединения";
+                message = MyStrings.ErrorNoSelectedElements;
                 return Result.Failed;
             }
             if (ids.Count > 1)
             {
-                message = "Выберите только один элемент";
+                message = MyStrings.ErrorSelectSingleElement;
                 return Result.Failed;
             }
 
@@ -59,25 +56,24 @@ namespace AutoJoin
 
             //получаю список элементов, которые пересекает данный элемент
             List<Element> elems = Intersection.GetAllIntersectionElements(doc, voidElem);
-            Debug.WriteLine("Intersection elements: " + elems.Count.ToString());
+            Debug.WriteLine("Intersected elements: " + elems.Count.ToString());
 
             if (elems == null)
             {
-                message = "Элемент не имеет пересечений. Вырезание не выполнено";
-                return Result.Failed;
+                message = MyStrings.MessageNoIntersectionsNoCut;
             }
 
             //вырезаю элемент из данных элементов
             using (Transaction t = new Transaction(doc))
             {
-                t.Start("Вырезание геометрии");
+                t.Start(MyStrings.TransactionCut);
                 foreach (Element curElem in elems)
                 {
                     Intersection.CutElement(doc, curElem, voidElem);
                 }
                 t.Commit();
             }
-            Debug.WriteLine("AutoCut complete");
+            Debug.WriteLine("AutoCut completed");
             return Result.Succeeded;
         }
     }

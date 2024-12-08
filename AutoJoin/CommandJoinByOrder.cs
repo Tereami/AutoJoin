@@ -11,15 +11,12 @@ This code is provided 'as is'. Author disclaims any implied warranty.
 Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 #endregion
 
 
@@ -39,15 +36,14 @@ namespace AutoJoin
 
             if (ids.Count == 0)
             {
-                message = "Выберите элементы для соединения";
+                message = MyStrings.ErrorNoSelectedElements;
                 return Result.Failed;
             }
 
-            if(ids.Count > 100)
+            if (ids.Count > 100)
             {
-                TaskDialog dialog = new TaskDialog("Предупреждение");
-                dialog.MainInstruction = "Выделено большое количество элементов (" + ids.Count.ToString()
-                    + "), их соединение может привести к снижение быстродействия модели. Продолжить?";
+                TaskDialog dialog = new TaskDialog(MyStrings.Warning);
+                dialog.MainInstruction = $"{MyStrings.WarningTooManyElements1} ({ids.Count}), {MyStrings.WarningTooManyElements2}?";
                 dialog.CommonButtons = TaskDialogCommonButtons.Ok | TaskDialogCommonButtons.Cancel;
 
                 if (dialog.Show() != TaskDialogResult.Ok)
@@ -63,7 +59,7 @@ namespace AutoJoin
                 elems.Add(elem);
             }
 
-            
+
 
             List<MyCategory> uniqCats = elems
                 .Select(i => (BuiltInCategory)i.Category.Id.GetElementIdValue())
@@ -74,7 +70,7 @@ namespace AutoJoin
             FormSetJoinOrder form = new FormSetJoinOrder(uniqCats);
             if (form.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 return Result.Cancelled;
-            
+
             Dictionary<BuiltInCategory, int> categoriesPriority =
                 form.Cats.ToDictionary(i => i._category, j => j.priority);
 
@@ -82,7 +78,7 @@ namespace AutoJoin
 
             using (Transaction t = new Transaction(doc))
             {
-                t.Start("Соединение " + elems.Count.ToString() + " элементов");
+                t.Start(MyStrings.TransactionJoin);
 
                 foreach (Element elem1 in elems)
                 {
@@ -107,11 +103,11 @@ namespace AutoJoin
                         int firstElemPriority = categoriesPriority[(BuiltInCategory)elem1.Category.Id.GetElementIdValue()];
                         int secondElemPriority = categoriesPriority[(BuiltInCategory)elem2.Category.Id.GetElementIdValue()];
 
-                        if(isFirstElemMain && firstElemPriority > secondElemPriority)
+                        if (isFirstElemMain && firstElemPriority > secondElemPriority)
                         {
                             JoinGeometryUtils.SwitchJoinOrder(doc, elem1, elem2);
                             counter++;
-                        }    
+                        }
                     }
                 }
 
@@ -124,7 +120,7 @@ namespace AutoJoin
 
             if (counter == 0)
             {
-                message = "Все соединения уже соответствуют заданному приоритету";
+                message = MyStrings.MessageJoinPriorityNoJoin;
                 return Result.Cancelled;
             }
             return Result.Succeeded;

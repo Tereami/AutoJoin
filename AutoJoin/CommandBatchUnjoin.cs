@@ -12,14 +12,11 @@ Zuev Aleksandr, 2021, all rigths reserved.*/
 #endregion
 #region usings
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using System.Collections.Generic;
+using System.Linq;
 #endregion
 
 namespace AutoJoin
@@ -34,15 +31,15 @@ namespace AutoJoin
             Selection sel = commandData.Application.ActiveUIDocument.Selection;
             List<ElementId> selids = sel.GetElementIds().ToList();
 
-            if(selids.Count == 0)
+            if (selids.Count == 0)
             {
-                message = "Выберите элементы";
+                message = MyStrings.ErrorNoSelectedElements;
                 return Result.Failed;
             }
 
             using (Transaction t = new Transaction(doc))
             {
-                t.Start("Отсоединение элементов");
+                t.Start(MyStrings.TransactionUnjoin);
                 foreach (ElementId selId in selids)
                 {
                     Element elem = doc.GetElement(selId);
